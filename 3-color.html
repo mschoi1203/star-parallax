@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>별의 색과 표면 온도</title>
+<meta name="description" content="중학교 3학년 과학 · 별과 우주 · 3차시 별의 색과 표면 온도">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.spec{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:10px}
+.spec div{border-radius:8px;padding:8px 2px;text-align:center;font-size:13px;color:#111;font-weight:500}
+.spec b{display:block;font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="topbar"><a href="./">← 단원 목록</a><span>3 / 6차시</span></div>
+<header class="hero">
+  <span class="tag">중학교 3학년 과학 · Ⅶ. 별과 우주 · 3차시</span>
+  <h1>별의 색과 표면 온도</h1>
+  <p class="sub">밤하늘의 별은 왜 색이 다를까?</p>
+  <nav class="toc"><a href="#s1">학습 목표</a><a href="#s2">생각 열기</a><a href="#s3">개념</a><a href="#s4">시뮬레이션</a><a href="#s5">분류 활동</a><a href="#s6">확인 문제</a><a href="#s7">정리</a></nav>
+</header>
+
+<section class="card" id="s1">
+  <h2><span class="num">1</span>학습 목표</h2>
+  <ul>
+    <li>별의 색이 다른 까닭을 표면 온도와 관련지어 설명할 수 있다.</li>
+    <li>별의 색에 따라 표면 온도를 비교할 수 있다.</li>
+  </ul>
+</section>
+
+<section class="card" id="s2">
+  <h2><span class="num">2</span>생각 열기 — 쇠를 달구면?</h2>
+  <p>대장간에서 쇠를 달구면 처음엔 <b style="color:#e03131">붉은색</b>으로 빛나다가, 더 뜨거워지면 <b style="color:#f59f00">노란색</b>, 아주 뜨거워지면 <b>흰색</b>에 가깝게 빛난다. 가스레인지의 <b style="color:#1c7ed6">파란 불꽃</b>은 붉은 불꽃보다 뜨겁다.</p>
+  <div class="callout">물체는 온도가 높을수록 <b>파장이 짧은 빛(파란빛)</b>을 많이 내고, 온도가 낮을수록 <b>파장이 긴 빛(붉은빛)</b>을 많이 낸다.</div>
+</section>
+
+<section class="card" id="s3">
+  <h2><span class="num">3</span>개념 — 별의 색과 분광형</h2>
+  <p>별의 색은 <b>표면 온도</b>에 따라 다르다. 표면 온도가 높은 별은 파란색, 낮은 별은 붉은색을 띤다. 별을 색(표면 온도)에 따라 나눈 것을 <b>분광형</b>이라고 한다.</p>
+  <div class="spec" id="spec"></div>
+  <p class="note">← 표면 온도 높음 · · · 표면 온도 낮음 →</p>
+  <div class="tbl"><table>
+    <thead><tr><th>색</th><th>대표 별</th><th>표면 온도(약)</th></tr></thead>
+    <tbody>
+      <tr><td>청백색</td><td>리겔, 스피카</td><td>10 000 ~ 30 000 K</td></tr>
+      <tr><td>백색</td><td>시리우스, 베가</td><td>7 500 ~ 10 000 K</td></tr>
+      <tr><td>황색</td><td>태양, 카펠라</td><td>5 200 ~ 6 000 K</td></tr>
+      <tr><td>주황색</td><td>아크투르스, 알데바란</td><td>3 700 ~ 5 200 K</td></tr>
+      <tr><td>적색</td><td>베텔게우스, 안타레스</td><td>3 700 K 이하</td></tr>
+    </tbody>
+  </table></div>
+  <p class="note">※ K(켈빈): 절대 온도의 단위. 0 ℃ ≈ 273 K.</p>
+</section>
+
+<section class="card" id="s4">
+  <h2><span class="num">4</span>시뮬레이션 — 별의 온도를 바꿔 보자</h2>
+  <p><b>활동</b>: 표면 온도를 바꾸면서 별의 색과, 별이 가장 많이 내는 빛의 파장(그래프의 꼭대기)이 어떻게 변하는지 관찰하자.</p>
+  <div class="sim-grid">
+    <div>
+      <p class="panel-label">별의 모습</p>
+      <canvas id="star" width="600" height="400" aria-label="표면 온도에 따른 별의 색"></canvas>
+    </div>
+    <div>
+      <p class="panel-label">파장에 따른 빛의 세기 (색 띠 = 눈에 보이는 빛)</p>
+      <canvas id="curve" width="600" height="300" aria-label="표면 온도에 따른 별빛의 파장별 세기 그래프"></canvas>
+      <div class="controls">
+        <div class="ctrl">
+          <label for="temp"><span>표면 온도</span><span id="tempV"></span></label>
+          <input id="temp" type="range" min="0" max="1" step="0.001" value="0.35">
+        </div>
+        <div class="btns" id="presets"></div>
+      </div>
+    </div>
+  </div>
+  <div class="readout">
+    <div class="stat"><div class="k">별의 색</div><div class="v" id="colV">—</div></div>
+    <div class="stat"><div class="k">분광형</div><div class="v" id="clsV">—</div></div>
+    <div class="stat"><div class="k">가장 세게 내는 빛의 파장</div><div class="v" id="peakV">—</div></div>
+  </div>
+  <h3>탐구 질문</h3>
+  <ol>
+    <li>온도를 높이면 그래프의 꼭대기는 어느 쪽(짧은 파장 / 긴 파장)으로 이동하나?</li>
+    <li>태양(약 5 800 K)이 노란색으로 보이는 까닭을 그래프로 설명해 보자.</li>
+    <li>오리온자리의 베텔게우스(붉은색)와 리겔(청백색) 중 표면 온도가 높은 별은?</li>
+  </ol>
+</section>
+
+<section class="card" id="s5">
+  <h2><span class="num">5</span>분류 활동 — 표면 온도가 높은 순서는?</h2>
+  <p>각 별의 색을 보고 표면 온도 순위를 고르세요. (1위 = 가장 뜨거움)</p>
+  <div id="cls"></div>
+</section>
+
+<section class="card" id="s6">
+  <h2><span class="num">6</span>확인 문제</h2>
+  <div id="quiz"></div>
+  <div class="score" id="score"></div>
+</section>
+
+<section class="card" id="s7">
+  <h2><span class="num">7</span>정리</h2>
+  <ul>
+    <li>별의 색은 표면 온도에 따라 다르다.</li>
+    <li>표면 온도: 청색 &gt; 청백색 &gt; 백색 &gt; 황백색 &gt; 황색 &gt; 주황색 &gt; 적색</li>
+    <li>분광형: O – B – A – F – G – K – M (왼쪽일수록 뜨겁다). 태양은 G형.</li>
+  </ul>
+</section>
+
+<div class="pager"><a href="2-brightness.html">← 2차시 별의 밝기와 등급</a><a href="4-galaxy.html">4차시 우리은하 →</a></div>
+<footer>중학교 3학년 과학 수업 자료 · 별의 색과 표면 온도</footer>
+</div>
+<script src="common.js"></script>
+<script>
+(function(){
+  const {$, css, onTheme} = U;
+  const TMIN = 2500, TMAX = 40000;
+  const T = () => Math.round(TMIN * Math.pow(TMAX/TMIN, +$('temp').value));
+  const setT = t => { $('temp').value = Math.log(t/TMIN)/Math.log(TMAX/TMIN); draw(); };
+
+  // 흑체 온도 → RGB (Tanner Helland 근사)
+  function rgb(t){
+    const k = t/100; let r,g,b;
+    r = k<=66 ? 255 : 329.698727446*Math.pow(k-60,-0.1332047592);
+    g = k<=66 ? 99.4708025861*Math.log(k)-161.1195681661 : 288.1221695283*Math.pow(k-60,-0.0755148492);
+    b = k>=66 ? 255 : (k<=19 ? 0 : 138.5177312231*Math.log(k-10)-305.0447927307);
+    const c = v => Math.max(0, Math.min(255, Math.round(v)));
+    return [c(r),c(g),c(b)];
+  }
+  const CLASSES = [
+    {c:'O', min:30000, name:'청색'}, {c:'B', min:10000, name:'청백색'}, {c:'A', min:7500, name:'백색'},
+    {c:'F', min:6000, name:'황백색'}, {c:'G', min:5200, name:'황색'}, {c:'K', min:3700, name:'주황색'}, {c:'M', min:0, name:'적색'}
+  ];
+  const cls = t => CLASSES.find(x => t >= x.min);
+
+  // 분광형 띠
+  const REP = {O:35000,B:20000,A:8500,F:6800,G:5600,K:4400,M:3200};
+  CLASSES.forEach(x => { const d=document.createElement('div'); const [r,g,b]=rgb(REP[x.c]); d.style.background=`rgb(${r},${g},${b})`; d.innerHTML=`<b>${x.c}</b>${x.name}`; $('spec').appendChild(d); });
+
+  const st = $('star'), sx = st.getContext('2d'), cv = $('curve'), cx = cv.getContext('2d');
+  const bg = Array.from({length:50},(_,i)=>{const a=Math.sin(i*51.3)*1e4,b=Math.sin(i*17.9)*1e4;return{x:a-Math.floor(a),y:b-Math.floor(b)}});
+
+  function planck(lnm, t){ const l = lnm*1e-9; return 1/(Math.pow(l,5)*(Math.exp(0.014388/(l*t))-1)); }
+
+  function draw(){
+    const t = T(), [r,g,b] = rgb(t), k = cls(t);
+    // star
+    const W = st.width, H = st.height;
+    sx.fillStyle = css('--space'); sx.fillRect(0,0,W,H);
+    sx.fillStyle = css('--space-star'); bg.forEach(p=>{sx.globalAlpha=.5;sx.beginPath();sx.arc(p.x*W,p.y*H,1,0,7);sx.fill();}); sx.globalAlpha=1;
+    const gr = sx.createRadialGradient(W/2,H/2,0,W/2,H/2,150);
+    gr.addColorStop(0,'#fff'); gr.addColorStop(0.25,`rgb(${r},${g},${b})`); gr.addColorStop(0.5,`rgba(${r},${g},${b},0.35)`); gr.addColorStop(1,'rgba(0,0,0,0)');
+    sx.fillStyle = gr; sx.beginPath(); sx.arc(W/2,H/2,150,0,7); sx.fill();
+    sx.fillStyle = css('--space-star'); sx.font='15px "Noto Sans KR",sans-serif'; sx.textAlign='center';
+    sx.fillText(t.toLocaleString()+' K', W/2, H-16);
+    // curve
+    const CW = cv.width, CH = cv.height, L0 = 100, L1 = 2000, pad = 34;
+    cx.fillStyle = css('--card'); cx.fillRect(0,0,CW,CH);
+    const X = l => pad + (l-L0)/(L1-L0)*(CW-pad-10);
+    // visible band
+    for(let l=380;l<=750;l+=2){ const h = 270 - (l-380)/(750-380)*270; cx.fillStyle=`hsla(${h},90%,55%,0.35)`; cx.fillRect(X(l),10,X(l+2)-X(l)+0.5,CH-pad-10); }
+    let max = 0; for(let l=L0;l<=L1;l+=5) max = Math.max(max, planck(l,t));
+    cx.strokeStyle = css('--text'); cx.lineWidth = 2.5; cx.beginPath();
+    for(let l=L0;l<=L1;l+=5){ const y = CH-pad - planck(l,t)/max*(CH-pad-20); l===L0?cx.moveTo(X(l),y):cx.lineTo(X(l),y); }
+    cx.stroke();
+    const peak = 2.898e6/t;
+    if(peak <= L1){ cx.strokeStyle = css('--star'); cx.setLineDash([4,4]); cx.beginPath(); cx.moveTo(X(peak),10); cx.lineTo(X(peak),CH-pad); cx.stroke(); cx.setLineDash([]); }
+    cx.strokeStyle = css('--muted'); cx.lineWidth=1; cx.beginPath(); cx.moveTo(pad,CH-pad); cx.lineTo(CW-10,CH-pad); cx.stroke();
+    cx.fillStyle = css('--muted'); cx.font='13px "Noto Sans KR",sans-serif'; cx.textAlign='center';
+    [100,500,1000,1500,2000].forEach(l=>cx.fillText(l+'nm', X(l), CH-pad+18));
+    cx.textAlign='left'; cx.fillText('← 짧은 파장(파란빛 쪽)      긴 파장(붉은빛 쪽) →', pad, 24);
+    $('tempV').textContent = t.toLocaleString()+' K';
+    $('colV').textContent = k.name; $('clsV').textContent = k.c + '형';
+    $('peakV').textContent = Math.round(peak) + ' nm' + (peak<380?' (자외선)':peak>750?' (적외선)':'');
+  }
+  [['베텔게우스',3500],['태양',5800],['시리우스',9900],['리겔',12000],['O형 별',35000]].forEach(([n,t])=>{
+    const b=document.createElement('button'); b.textContent=n; b.addEventListener('click',()=>setT(t)); $('presets').appendChild(b);
+  });
+  $('temp').addEventListener('input', draw);
+  onTheme(draw); setT(5800);
+
+  const R = ['1위','2위','3위','4위','5위'];
+  U.classify('cls', [
+    {t:'안타레스 — 적색', a:'5위'},
+    {t:'스피카 — 청백색', a:'1위'},
+    {t:'태양 — 황색', a:'3위'},
+    {t:'아크투르스 — 주황색', a:'4위'},
+    {t:'시리우스 — 백색', a:'2위'}
+  ], R);
+
+  U.quiz('quiz','score',[
+    {q:'별의 색이 다른 가장 큰 까닭은?', o:['별까지의 거리','별의 표면 온도','별의 크기','별의 나이'], a:1, e:'별의 색은 표면 온도에 따라 달라진다.'},
+    {q:'다음 중 표면 온도가 가장 높은 별의 색은?', o:['적색','황색','백색','청백색'], a:3, e:'파란색을 띨수록 표면 온도가 높다.'},
+    {q:'태양의 색과 분광형으로 옳은 것은?', o:['적색, M형','황색, G형','백색, A형','청색, O형'], a:1, e:'태양은 표면 온도 약 5 800 K의 황색 G형 별이다.'},
+    {q:'별의 표면 온도가 높아지면 가장 세게 내는 빛의 파장은?', o:['길어진다','짧아진다','변하지 않는다','사라진다'], a:1, e:'온도가 높을수록 짧은 파장(파란빛 쪽)의 빛을 가장 세게 낸다.'},
+    {q:'오리온자리의 베텔게우스(적색)와 리겔(청백색)에 대한 설명으로 옳은 것은?', o:['베텔게우스가 더 뜨겁다','리겔이 더 뜨겁다','두 별의 온도는 같다','색으로는 온도를 알 수 없다'], a:1, e:'청백색인 리겔의 표면 온도가 더 높다.'}
+  ]);
+})();
+</script>
+</body>
+</html>

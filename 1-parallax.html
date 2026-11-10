@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>연주 시차 탐구</title>
+<meta name="description" content="중학교 3학년 과학 · 별과 우주 · 연주 시차로 별까지의 거리 구하기 (1차시)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7fb; --card:#ffffff; --text:#1d2433; --muted:#5b6478; --line:#dde1ea;
+  --accent:#3b5bdb; --accent-soft:#e7ecff; --good:#2b8a3e; --good-soft:#e6f4ea;
+  --bad:#c92a2a; --bad-soft:#fdecec; --sun:#f59f00; --earth:#1c7ed6; --star:#e8590c;
+  --space:#0f1630; --space-star:#c9d3ff; --orbit:#8a94b0;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1220; --card:#171c2e; --text:#e6e9f2; --muted:#a0a8bd; --line:#2a3148;
+    --accent:#7c94ff; --accent-soft:#232b4d; --good:#69db7c; --good-soft:#1d3326;
+    --bad:#ff8787; --bad-soft:#3a1f22; --sun:#ffc034; --earth:#4dabf7; --star:#ff922b;
+    --space:#070b18; --space-star:#c9d3ff; --orbit:#6b7594;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1220; --card:#171c2e; --text:#e6e9f2; --muted:#a0a8bd; --line:#2a3148;
+  --accent:#7c94ff; --accent-soft:#232b4d; --good:#69db7c; --good-soft:#1d3326;
+  --bad:#ff8787; --bad-soft:#3a1f22; --sun:#ffc034; --earth:#4dabf7; --star:#ff922b;
+  --space:#070b18; --space-star:#c9d3ff; --orbit:#6b7594;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.7;font-size:17px}
+.wrap{max-width:880px;margin:0 auto;padding:24px 16px 64px}
+header.hero{padding:8px 0 16px}
+.tag{display:inline-block;font-size:13px;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+h1{font-size:clamp(26px,5vw,36px);margin:10px 0 6px;line-height:1.3}
+.sub{color:var(--muted);margin:0}
+nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 8px}
+nav.toc a{font-size:14px;color:var(--text);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:5px 12px;border-radius:999px}
+nav.toc a:hover{border-color:var(--accent);color:var(--accent)}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 20px;margin:18px 0}
+h2{font-size:22px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
+h2 .num{flex:none;width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;font-size:15px;display:grid;place-items:center}
+h3{font-size:18px;margin:18px 0 6px}
+ul.goals{margin:0;padding-left:20px}
+.callout{background:var(--accent-soft);border-radius:12px;padding:14px 16px;margin:12px 0}
+.formula{font-size:clamp(20px,4vw,26px);font-weight:700;text-align:center;padding:14px;border:2px dashed var(--accent);border-radius:12px;margin:14px 0}
+.formula small{display:block;font-size:14px;font-weight:400;color:var(--muted)}
+.sim-grid{display:grid;grid-template-columns:1fr;gap:14px}
+@media(min-width:760px){.sim-grid{grid-template-columns:1.1fr 1fr}}
+canvas{width:100%;display:block;border-radius:12px;background:var(--space)}
+.panel-label{font-size:14px;color:var(--muted);margin:0 0 6px}
+.controls{display:grid;gap:12px;margin-top:14px}
+.ctrl label{display:flex;justify-content:space-between;font-size:15px;font-weight:500}
+.ctrl input[type=range]{width:100%;accent-color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--card);color:var(--text);padding:8px 14px;border-radius:10px;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+button:hover{border-color:var(--accent)}
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:12px}
+.stat{border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.stat .k{font-size:13px;color:var(--muted)}
+.stat .v{font-size:20px;font-weight:700}
+.note{font-size:14px;color:var(--muted)}
+table{width:100%;border-collapse:collapse;font-size:15px;margin-top:8px}
+th,td{border:1px solid var(--line);padding:8px;text-align:center}
+th{background:var(--accent-soft)}
+.practice{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.practice input{font:inherit;width:120px;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+.fb{margin-top:8px;padding:8px 12px;border-radius:10px;display:none}
+.fb.ok{display:block;background:var(--good-soft);color:var(--good)}
+.fb.no{display:block;background:var(--bad-soft);color:var(--bad)}
+.q{border-top:1px solid var(--line);padding:14px 0}
+.q:first-of-type{border-top:none}
+.q p{margin:0 0 8px;font-weight:500}
+.opts{display:grid;gap:6px}
+.opts button{text-align:left}
+.opts button.right{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.opts button.wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--bad)}
+.score{font-weight:700;font-size:18px;margin-top:10px}
+footer{text-align:center;color:var(--muted);font-size:13px;margin-top:30px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div style="display:flex;justify-content:space-between;font-size:14px;padding:6px 0"><a href="./" style="color:var(--accent);text-decoration:none">← 단원 목록</a><span>1 / 6차시</span></div>
+
+<header class="hero">
+  <span class="tag">중학교 3학년 과학 · Ⅶ. 별과 우주 · 1차시</span>
+  <h1>연주 시차로 별까지의 거리 구하기</h1>
+  <p class="sub">너무 멀어서 갈 수 없는 별까지의 거리를, 지구의 공전을 이용해 재 보자!</p>
+  <nav class="toc">
+    <a href="#s1">학습 목표</a><a href="#s2">생각 열기</a><a href="#s3">개념</a>
+    <a href="#s4">시뮬레이션</a><a href="#s5">계산 연습</a><a href="#s6">확인 문제</a><a href="#s7">정리</a>
+  </nav>
+</header>
+
+<section class="card" id="s1">
+  <h2><span class="num">1</span>학습 목표</h2>
+  <ul class="goals">
+    <li>시차의 뜻을 설명할 수 있다.</li>
+    <li>연주 시차가 생기는 까닭을 지구의 공전과 관련지어 설명할 수 있다.</li>
+    <li>연주 시차를 이용하여 별까지의 거리를 구할 수 있다.</li>
+  </ul>
+</section>
+
+<section class="card" id="s2">
+  <h2><span class="num">2</span>생각 열기 — 손가락 실험</h2>
+  <ol>
+    <li>팔을 앞으로 쭉 뻗고 엄지손가락을 세운다.</li>
+    <li>왼쪽 눈을 감고 오른쪽 눈으로만 엄지를 본다. 엄지 뒤에 무엇이 있는지 기억한다.</li>
+    <li>이번엔 오른쪽 눈을 감고 왼쪽 눈으로 본다. 엄지가 배경에 대해 어떻게 움직였나?</li>
+    <li>엄지를 얼굴 가까이 가져와 다시 해 본다. 움직임이 커졌나, 작아졌나?</li>
+  </ol>
+  <div class="callout">
+    <b>시차</b>: 관측하는 위치가 달라질 때 물체의 겉보기 방향이 달라지는 현상. 물체가 <b>가까울수록</b> 시차가 <b>크다</b>.
+  </div>
+</section>
+
+<section class="card" id="s3">
+  <h2><span class="num">3</span>개념 — 연주 시차</h2>
+  <p>
+    지구는 태양 주위를 1년에 한 바퀴 돈다. 그래서 <b>6개월 간격</b>으로 같은 별을 관측하면,
+    지구 공전 궤도의 양 끝에서 보는 셈이 된다. 이때 가까운 별은 멀리 있는 배경 별들에 대해 위치가 조금 달라져 보인다.
+  </p>
+  <div class="callout">
+    <b>연주 시차</b>: 6개월 간격으로 측정한 별의 시차의 <b>1/2</b>.<br>
+    즉, 별과 태양, 지구가 이루는 각이며 단위는 초(″)를 쓴다. (1° = 60′ = 3600″)
+  </div>
+  <div class="formula">
+    별까지의 거리(pc) = 1 ÷ 연주 시차(″)
+    <small>1 pc(파섹) = 연주 시차가 1″인 별까지의 거리 ≈ 3.26 광년 ≈ 3×10<sup>13</sup> km</small>
+  </div>
+  <p class="note">
+    ※ 연주 시차는 매우 작아서, 약 100 pc보다 먼 별은 측정하기 어렵다. 그래서 연주 시차는 비교적 가까운 별의 거리를 구할 때 쓴다.
+  </p>
+</section>
+
+<section class="card" id="s4">
+  <h2><span class="num">4</span>시뮬레이션 — 직접 관측해 보기</h2>
+  <p>
+    <b>활동</b>: ① 별까지의 거리를 정한다 → ② 1월에서 <b>[위치 기록]</b> → ③ 7월로 옮겨 다시 <b>[위치 기록]</b> →
+    ④ 두 위치 사이 각(시차)의 절반이 연주 시차임을 확인한다.
+  </p>
+  <div class="sim-grid">
+    <div>
+      <p class="panel-label">우주에서 내려다본 모습 (거리와 각도는 과장하여 표현)</p>
+      <canvas id="top" width="600" height="460" aria-label="태양, 지구 공전 궤도, 별의 위치를 위에서 내려다본 그림"></canvas>
+    </div>
+    <div>
+      <p class="panel-label">지구에서 망원경으로 본 하늘</p>
+      <canvas id="sky" width="600" height="300" aria-label="지구에서 본 별과 배경 별의 모습"></canvas>
+      <div class="controls">
+        <div class="ctrl">
+          <label for="month"><span>지구의 위치(월)</span><span id="monthV">1월</span></label>
+          <input id="month" type="range" min="0" max="11" step="1" value="0">
+        </div>
+        <div class="ctrl">
+          <label for="dist"><span>별까지의 거리</span><span id="distV">2 pc</span></label>
+          <input id="dist" type="range" min="1" max="10" step="0.5" value="2">
+        </div>
+        <div class="btns">
+          <button class="primary" id="mark">위치 기록</button>
+          <button id="clear">기록 지우기</button>
+          <button id="play">▶ 1년 재생</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="readout">
+    <div class="stat"><div class="k">기록한 두 위치 사이의 각(시차)</div><div class="v" id="shiftV">—</div></div>
+    <div class="stat"><div class="k">연주 시차 (시차 ÷ 2)</div><div class="v" id="pV">—</div></div>
+    <div class="stat"><div class="k">계산한 거리 (1 ÷ 연주 시차)</div><div class="v" id="dV">—</div></div>
+  </div>
+  <p class="note" id="markHint">1월과 7월처럼 6개월 간격으로 두 번 기록해 보세요.</p>
+  <h3>탐구 질문</h3>
+  <ol>
+    <li>별까지의 거리를 늘리면 하늘에서 별이 움직이는 폭은 어떻게 변하나?</li>
+    <li>왜 1월과 7월처럼 <b>6개월 간격</b>으로 관측해야 시차가 가장 크게 나타날까?</li>
+    <li>배경의 먼 별들은 왜 거의 움직이지 않을까?</li>
+  </ol>
+</section>
+
+<section class="card" id="s5">
+  <h2><span class="num">5</span>계산 연습</h2>
+  <table>
+    <thead><tr><th>별</th><th>연주 시차</th><th>거리(pc)</th></tr></thead>
+    <tbody>
+      <tr><td>프록시마 센타우리</td><td>0.77″</td><td>약 1.3</td></tr>
+      <tr><td>시리우스</td><td>0.38″</td><td>약 2.6</td></tr>
+      <tr><td>베가</td><td>0.13″</td><td>약 7.7</td></tr>
+    </tbody>
+  </table>
+  <h3>도전! 거리를 구해 보자</h3>
+  <p id="probText"></p>
+  <div class="practice">
+    <input id="ans" type="number" step="0.1" inputmode="decimal" aria-label="답 입력"> <span id="unit">pc</span>
+    <button class="primary" id="check">확인</button>
+    <button id="next">새 문제</button>
+  </div>
+  <div class="fb" id="fb"></div>
+</section>
+
+<section class="card" id="s6">
+  <h2><span class="num">6</span>확인 문제</h2>
+  <div id="quiz"></div>
+  <div class="score" id="score"></div>
+</section>
+
+<section class="card" id="s7">
+  <h2><span class="num">7</span>정리</h2>
+  <ul>
+    <li><b>시차</b>: 관측 위치에 따라 물체의 겉보기 방향이 달라지는 현상. 가까울수록 크다.</li>
+    <li><b>연주 시차</b>: 6개월 간격으로 측정한 시차의 1/2. 지구의 공전 때문에 생긴다.</li>
+    <li><b>거리(pc) = 1 ÷ 연주 시차(″)</b> → 연주 시차와 거리는 반비례한다.</li>
+    <li>1 pc ≈ 3.26 광년. 연주 시차는 가까운 별(약 100 pc 이내)의 거리를 구할 때 쓴다.</li>
+  </ul>
+  <div class="callout">다음 시간: 별의 밝기와 등급 — 거리가 밝기에 어떤 영향을 줄까?</div>
+</section>
+
+<div style="display:flex;justify-content:space-between;gap:8px;margin-top:24px;flex-wrap:wrap"><a href="./" style="color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px">← 단원 목록</a><a href="2-brightness.html" style="color:var(--accent);text-decoration:none;border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:10px">2차시 별의 밝기와 등급 →</a></div>
+<footer>중학교 3학년 과학 수업 자료 · 연주 시차</footer>
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  const top = $('top'), sky = $('sky');
+  const tctx = top.getContext('2d'), sctx = sky.getContext('2d');
+  const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+  let marks = [];
+  let playing = null;
+
+  // fixed background stars for the sky view
+  const bg = Array.from({length:70}, (_,i) => {
+    const r = Math.sin(i*12.9898)*43758.5453; const r2 = Math.sin(i*78.233)*12345.678;
+    return {x:(r - Math.floor(r)), y:(r2 - Math.floor(r2)), s: 0.6 + ((i*7)%5)/4};
+  });
+
+  const state = () => ({ m: +$('month').value, d: +$('dist').value });
+  // apparent offset of the near star in arcseconds (true geometry, small-angle):
+  // Earth's displacement perpendicular to the star direction is cos(theta) AU; shift = -cos(theta)/d arcsec
+  const offsetArcsec = (m, d) => -Math.cos(2*Math.PI*m/12) / d;
+
+  function drawTop(){
+    const {m, d} = state();
+    const W = top.width, H = top.height;
+    tctx.clearRect(0,0,W,H);
+    tctx.fillStyle = css('--space'); tctx.fillRect(0,0,W,H);
+    const cx = W/2, cy = H*0.74, R = 70;
+    // star position (exaggerated scale)
+    const sy = cy - 90 - (d-1)*26;
+    const sx = cx;
+    // orbit
+    tctx.strokeStyle = css('--orbit'); tctx.setLineDash([5,5]); tctx.lineWidth = 1.5;
+    tctx.beginPath(); tctx.arc(cx,cy,R,0,Math.PI*2); tctx.stroke(); tctx.setLineDash([]);
+    // month labels
+    tctx.fillStyle = css('--orbit'); tctx.font = '13px "Noto Sans KR",sans-serif'; tctx.textAlign='center';
+    tctx.fillText('1월', cx+R+20, cy+5); tctx.fillText('7월', cx-R-20, cy+5);
+    // background far stars strip
+    tctx.fillStyle = css('--space-star');
+    for(const b of bg){ if(b.y<0.5) { tctx.globalAlpha=.6; tctx.beginPath(); tctx.arc(b.x*W, 14+b.y*30, b.s, 0, 7); tctx.fill(); } }
+    tctx.globalAlpha=1;
+    tctx.fillStyle = css('--muted'); tctx.textAlign='left';
+    tctx.fillText('아주 먼 배경 별들', 10, 64);
+    // sun
+    tctx.fillStyle = css('--sun'); tctx.beginPath(); tctx.arc(cx,cy,13,0,7); tctx.fill();
+    tctx.fillStyle = css('--sun'); tctx.textAlign='center'; tctx.fillText('태양', cx, cy+32);
+    // marks: sight lines
+    for(const mk of marks){
+      const a = 2*Math.PI*mk.m/12, ex = cx + R*Math.cos(a), ey = cy - R*Math.sin(a);
+      sightLine(ex, ey, sx, sy, css('--orbit'), 0.8);
+    }
+    // earth
+    const a = 2*Math.PI*m/12, ex = cx + R*Math.cos(a), ey = cy - R*Math.sin(a);
+    sightLine(ex, ey, sx, sy, css('--earth'), 1);
+    // parallax angle arc at star between sun and earth
+    tctx.strokeStyle = css('--sun'); tctx.setLineDash([3,4]); tctx.beginPath(); tctx.moveTo(sx,sy); tctx.lineTo(cx,cy); tctx.stroke(); tctx.setLineDash([]);
+    tctx.fillStyle = css('--earth'); tctx.beginPath(); tctx.arc(ex,ey,8,0,7); tctx.fill();
+    tctx.fillText('지구', ex, ey + (Math.sin(a)>0 ? -14 : 24));
+    // star
+    tctx.fillStyle = css('--star'); tctx.beginPath(); tctx.arc(sx,sy,8,0,7); tctx.fill();
+    tctx.textAlign='left'; tctx.fillText('가까운 별 ('+d+' pc)', sx+14, sy+5);
+  }
+  function sightLine(x1,y1,x2,y2,color,alpha){
+    // extend line from earth through star up to the background
+    const t = (y2 - 40) / (y1 - y2) ;
+    const xe = x2 + (x2 - x1) * t, ye = 40;
+    tctx.globalAlpha = alpha; tctx.strokeStyle = color; tctx.lineWidth = 1.5;
+    tctx.beginPath(); tctx.moveTo(x1,y1); tctx.lineTo(xe,ye); tctx.stroke(); tctx.globalAlpha = 1;
+  }
+
+  const SCALE = 230; // px per arcsecond in the sky view (telescope magnification)
+  function drawSky(){
+    const {m, d} = state();
+    const W = sky.width, H = sky.height;
+    sctx.fillStyle = css('--space'); sctx.fillRect(0,0,W,H);
+    sctx.fillStyle = css('--space-star');
+    for(const b of bg){ sctx.globalAlpha=.75; sctx.beginPath(); sctx.arc(b.x*W, b.y*H, b.s, 0, 7); sctx.fill(); }
+    sctx.globalAlpha=1;
+    // crosshair / reference
+    sctx.strokeStyle = css('--orbit'); sctx.setLineDash([4,6]);
+    sctx.beginPath(); sctx.moveTo(W/2,0); sctx.lineTo(W/2,H); sctx.stroke(); sctx.setLineDash([]);
+    // scale bar: 0.5 arcsec
+    sctx.strokeStyle = css('--space-star'); sctx.lineWidth = 2;
+    sctx.beginPath(); sctx.moveTo(16,H-18); sctx.lineTo(16+SCALE*0.5,H-18); sctx.stroke();
+    sctx.fillStyle = css('--space-star'); sctx.font='13px "Noto Sans KR",sans-serif'; sctx.textAlign='left';
+    sctx.fillText('0.5″', 16, H-26);
+    // marks
+    for(const mk of marks){
+      const x = W/2 + offsetArcsec(mk.m, mk.d)*SCALE;
+      sctx.strokeStyle = css('--star'); sctx.lineWidth = 2; sctx.globalAlpha=.7;
+      sctx.beginPath(); sctx.arc(x, H/2, 11, 0, 7); sctx.stroke(); sctx.globalAlpha=1;
+      sctx.fillStyle = css('--star'); sctx.textAlign='center'; sctx.fillText(months[mk.m], x, H/2 - 18);
+    }
+    if(marks.length === 2){
+      const x1 = W/2 + offsetArcsec(marks[0].m, marks[0].d)*SCALE, x2 = W/2 + offsetArcsec(marks[1].m, marks[1].d)*SCALE;
+      sctx.strokeStyle = css('--star'); sctx.setLineDash([2,4]);
+      sctx.beginPath(); sctx.moveTo(x1,H/2+22); sctx.lineTo(x2,H/2+22); sctx.stroke(); sctx.setLineDash([]);
+    }
+    // current star
+    const x = W/2 + offsetArcsec(m, d)*SCALE;
+    sctx.fillStyle = css('--star'); sctx.beginPath(); sctx.arc(x, H/2, 7, 0, 7); sctx.fill();
+  }
+
+  function readout(){
+    const {d} = state();
+    $('monthV').textContent = months[+$('month').value];
+    $('distV').textContent = d + ' pc';
+    if(marks.length === 2){
+      const shift = Math.abs(offsetArcsec(marks[0].m, marks[0].d) - offsetArcsec(marks[1].m, marks[1].d));
+      if(marks[0].d !== marks[1].d){
+        $('shiftV').textContent = '—'; $('pV').textContent='—'; $('dV').textContent='—';
+        $('markHint').textContent = '두 기록의 별 거리가 달라요. 거리를 바꿨다면 기록을 지우고 다시 해 보세요.';
+        return;
+      }
+      $('shiftV').textContent = shift.toFixed(3) + '″';
+      const p = shift/2;
+      $('pV').textContent = p > 0.0005 ? p.toFixed(3) + '″' : '≈ 0″';
+      $('dV').textContent = p > 0.0005 ? (1/p).toFixed(2) + ' pc' : '측정 불가';
+      const six = Math.abs(marks[0].m - marks[1].m) === 6;
+      $('markHint').textContent = six
+        ? '6개월 간격으로 관측했어요! 계산한 거리가 실제 거리와 같은지 확인해 보세요.'
+        : '6개월 간격이 아니면 시차가 작게 측정돼 거리가 실제보다 멀게 계산돼요. 1월과 7월로 다시 해 보세요.';
+    } else {
+      $('shiftV').textContent = '—'; $('pV').textContent='—'; $('dV').textContent='—';
+      $('markHint').textContent = marks.length === 1
+        ? months[marks[0].m] + ' 위치를 기록했어요. 이제 6개월 뒤로 지구를 옮겨 다시 기록하세요.'
+        : '1월과 7월처럼 6개월 간격으로 두 번 기록해 보세요.';
+    }
+  }
+  function render(){ drawTop(); drawSky(); readout(); }
+
+  $('month').addEventListener('input', render);
+  $('dist').addEventListener('input', render);
+  $('mark').addEventListener('click', () => {
+    const s = state();
+    if(marks.length >= 2) marks = [];
+    marks.push({m:s.m, d:s.d}); render();
+  });
+  $('clear').addEventListener('click', () => { marks = []; render(); });
+  $('play').addEventListener('click', () => {
+    if(playing){ clearInterval(playing); playing=null; $('play').textContent='▶ 1년 재생'; return; }
+    $('play').textContent='■ 멈춤';
+    let steps = 0;
+    playing = setInterval(() => {
+      $('month').value = (+$('month').value + 1) % 12; render();
+      if(++steps >= 12){ clearInterval(playing); playing=null; $('play').textContent='▶ 1년 재생'; }
+    }, 450);
+  });
+  if (window.matchMedia) window.matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change', render);
+  render();
+
+  // ---- practice ----
+  let prob = null;
+  function newProb(){
+    const type = Math.random() < 0.6 ? 'd' : 'p';
+    if(type === 'd'){
+      const p = [0.1,0.2,0.25,0.4,0.5,0.05][Math.floor(Math.random()*6)];
+      prob = {type, p, answer: 1/p};
+      $('probText').textContent = `어떤 별의 연주 시차가 ${p}″이다. 이 별까지의 거리는 몇 pc일까?`;
+      $('unit').textContent = 'pc';
+    } else {
+      const d = [2,4,5,10,20,8][Math.floor(Math.random()*6)];
+      prob = {type, d, answer: 1/d};
+      $('probText').textContent = `어떤 별까지의 거리가 ${d} pc이다. 이 별의 연주 시차는 몇 초(″)일까?`;
+      $('unit').textContent = '″';
+    }
+    $('ans').value = ''; $('fb').className = 'fb';
+  }
+  $('check').addEventListener('click', () => {
+    const v = parseFloat($('ans').value), fb = $('fb');
+    if(isNaN(v)){ fb.className='fb no'; fb.textContent='숫자를 입력하세요.'; return; }
+    const ok = Math.abs(v - prob.answer) <= Math.max(0.01, prob.answer*0.02);
+    fb.className = 'fb ' + (ok ? 'ok' : 'no');
+    const ansTxt = +prob.answer.toFixed(3);
+    fb.textContent = ok
+      ? `정답! ${prob.type==='d' ? `1 ÷ ${prob.p} = ${ansTxt} pc` : `1 ÷ ${prob.d} = ${ansTxt}″`}`
+      : (prob.type==='d' ? '다시 생각해 보자. 거리(pc) = 1 ÷ 연주 시차(″)' : '다시 생각해 보자. 연주 시차(″) = 1 ÷ 거리(pc)');
+  });
+  $('next').addEventListener('click', newProb);
+  $('ans').addEventListener('keydown', e => { if(e.key==='Enter') $('check').click(); });
+  newProb();
+
+  // ---- quiz ----
+  const Q = [
+    {q:'연주 시차가 생기는 가장 직접적인 까닭은?', o:['지구의 자전','지구의 공전','별의 자전','달의 공전'], a:1,
+     e:'지구가 태양 주위를 공전하면서 관측 위치가 바뀌기 때문이다.'},
+    {q:'연주 시차를 정확히 측정하려면 같은 별을 어떤 간격으로 관측해야 할까?', o:['1일','1개월','6개월','10년'], a:2,
+     e:'6개월 간격이면 지구가 공전 궤도의 정반대 위치에 있어 시차가 가장 크다.'},
+    {q:'별 A의 연주 시차는 0.5″, 별 B는 0.1″이다. 옳은 것은?', o:['A가 B보다 5배 멀다','B가 A보다 5배 멀다','두 별의 거리는 같다','알 수 없다'], a:1,
+     e:'거리는 연주 시차에 반비례한다. A는 2 pc, B는 10 pc.'},
+    {q:'연주 시차가 0.2″인 별까지의 거리는?', o:['0.2 pc','2 pc','5 pc','20 pc'], a:2, e:'1 ÷ 0.2 = 5 pc'},
+    {q:'연주 시차로 아주 먼 별(수천 pc)의 거리를 구하기 어려운 까닭은?', o:['별이 너무 밝아서','연주 시차가 너무 작아 측정하기 어려워서','별이 움직이지 않아서','지구가 자전해서'], a:1,
+     e:'먼 별일수록 연주 시차가 작아져 측정 오차가 커진다.'}
+  ];
+  let correct = 0, answered = 0;
+  const quiz = $('quiz');
+  Q.forEach((item, i) => {
+    const div = document.createElement('div'); div.className='q';
+    div.innerHTML = `<p>${i+1}. ${item.q}</p><div class="opts"></div><div class="fb"></div>`;
+    const opts = div.querySelector('.opts'), fb = div.querySelector('.fb');
+    item.o.forEach((t, j) => {
+      const b = document.createElement('button'); b.textContent = `${'①②③④'[j]} ${t}`;
+      b.addEventListener('click', () => {
+        if(div.dataset.done) return; div.dataset.done = 1; answered++;
+        const ok = j === item.a; if(ok) correct++;
+        b.classList.add(ok ? 'right' : 'wrong');
+        opts.children[item.a].classList.add('right');
+        fb.className = 'fb ' + (ok ? 'ok' : 'no');
+        fb.textContent = (ok ? '정답! ' : '오답. ') + item.e;
+        if(answered === Q.length) $('score').textContent = `점수: ${correct} / ${Q.length}`;
+      });
+      opts.appendChild(b);
+    });
+    quiz.appendChild(div);
+  });
+})();
+</script>
+</body>
+</html>
